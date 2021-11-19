@@ -5,7 +5,7 @@ Project 4 - Ticket Purchase Web Application
 
 #### Checkpoint Due - December 7, 2021 - All students will be required to demonstrate their progress on or before the last day of class - December 7, 2021. Students who fail to demonstrate reasonable progress before this checkpoint will not receive credit for the Project Checkpoint criterion.
 
-For this project you will implement a ticket purchase web application (i.e., your own EventBrite!). You will design and implement a two-tier web application with a Java (Jetty/Servlets) front end and an SQL backend. 
+For this project you will implement a ticket purchase web application (i.e., your own EventBrite!). You will design and implement a two-tier web application with a Java (Jetty/Servlets) front end and an SQL cs601.project4.backend. 
 
 ### Required Features
 
