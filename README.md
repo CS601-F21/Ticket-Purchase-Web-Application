@@ -22,11 +22,11 @@ You *must* complete all of the following required features for a total of 55 poi
 | 5 | Create event | Allow the user to create a new event by entering all appropriate detail. |
 | 5 | Purchase tickets | Allow the user to purchase tickets for an event. |
 | 5 | Transfer tickets | Allow the user to transfer tickets to another user. |
-| 5 | SQL DB | Your solution must use your [assigned SQL database](https://docs.google.com/spreadsheets/d/1zEoGR9wBEJD7EKQQcjm8OMBD-APjPo-Ya_fRKD70OVU/edit?usp=sharing). |
-| 5 | Table - Users | Use a relational database to store *user account* data. |
-| 5 | Table - Events | Use a relational database to store *event* data. |
+| 5 | SQL DB | Your solution must use your [assigned SQL cs601.project4.backend.database](https://docs.google.com/spreadsheets/d/1zEoGR9wBEJD7EKQQcjm8OMBD-APjPo-Ya_fRKD70OVU/edit?usp=sharing). |
+| 5 | Table - Users | Use a relational cs601.project4.backend.database to store *user account* data. |
+| 5 | Table - Events | Use a relational cs601.project4.backend.database to store *event* data. |
 
-You may use additional database tables.
+You may use additional cs601.project4.backend.database tables.
 
 ### Additional Features
 
@@ -60,7 +60,7 @@ In addition, your project will be evaluated based on the following criteria for 
 ### Requirements
 
 1. You will use Servlets/Jetty as your web framework.
-2. You will use your [assigned SQL database](https://docs.google.com/spreadsheets/d/1zEoGR9wBEJD7EKQQcjm8OMBD-APjPo-Ya_fRKD70OVU/edit?usp=sharing) to store all data including user information, event information, and ticket transaction/purchase information. You are required to design the database tables. 
+2. You will use your [assigned SQL cs601.project4.backend.database](https://docs.google.com/spreadsheets/d/1zEoGR9wBEJD7EKQQcjm8OMBD-APjPo-Ya_fRKD70OVU/edit?usp=sharing) to store all data including user information, event information, and ticket transaction/purchase information. You are required to design the cs601.project4.backend.database tables. 
 3. By the deadline you must have all code committed to your Github repository. All features must be demonstrated during your interactive grading session.
 4. This is an individual assignment. Teams will not be permitted for this assignment.
 
