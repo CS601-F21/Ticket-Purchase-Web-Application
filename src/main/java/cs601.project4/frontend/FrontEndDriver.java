@@ -1,9 +1,13 @@
 package cs601.project4.frontend;
 
 import com.google.gson.Gson;
+import cs601.project4.frontend.login.LandingServlet;
+import cs601.project4.frontend.login.LoginServlet;
+import cs601.project4.frontend.login.LogoutServlet;
+import cs601.project4.frontend.login.utilities.Config;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+
 
 
 import java.nio.file.Paths;
@@ -13,13 +17,16 @@ public class FrontEndDriver {
 
     public static void main(String[] args) throws Exception {
         Gson gson = new Gson();
-        FrontEndConfig config = gson.fromJson(Utils.readFile(Paths.get(args[0])), FrontEndConfig.class);
+        Config config = gson.fromJson(Utils.readFile(Paths.get(args[0])), Config.class);
         Server server = new Server(8080);
-        ServletContextHandler handler = new ServletContextHandler();
+        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        handler.setAttribute(ServerConstants.CONFIG_KEY, config);
         server.setHandler(handler);
-        handler.addServlet(ListEventsServelet.class, "/list-events");
-        handler.addServlet(new ServletHolder(new SigninServlet(config.getGoogleClientId(), config.getRedirectURI())), "/login");
-        handler.addServlet(new ServletHolder(new RedirectServlet(config.getGoogleClientId(), config.getRedirectURI(), config.getGoogleClientSecret())), "/home");
+        handler.addServlet(ListEventsServlet.class, "/list-events");
+        handler.addServlet(LandingServlet.class, "/");
+        handler.addServlet(LoginServlet.class, "/login");
+        handler.addServlet(LogoutServlet.class, "/logout");
+        handler.addServlet(ProfileServlet.class, "/profile");
 
         server.start();
         server.join();

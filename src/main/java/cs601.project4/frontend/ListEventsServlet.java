@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
-public class ListEventsServelet extends HttpServlet {
+public class ListEventsServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {

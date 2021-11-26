@@ -1,4 +1,4 @@
-package cs601.project4.frontend;
+package cs601.project4.frontend.login.utilities;
 
 import java.io.IOException;
 import java.net.URI;
@@ -91,5 +91,4 @@ public class HTTPFetcher {
         }
         return builder;
     }
-
 }
