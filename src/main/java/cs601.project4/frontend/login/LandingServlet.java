@@ -25,8 +25,8 @@ public class LandingServlet extends HttpServlet {
         String sessionId = req.getSession(true).getId();
 
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if(clientInfoObj != null) {
+        Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        if(UserObj != null) {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");

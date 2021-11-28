@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    .fa {
+  padding: 2px;
+  font-size: 20px;
+  width: 25px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+  border-radius: 30%;
+}
+
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+  background: black;
+  color: white;
+}
+
+.fa-twitter {
+  background: black;
+  color: white;
+}
+
+
+.fa-instagram {
+  background: black;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+.row:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+  width: 100%;
+}
+
+@media only screen and (min-width: 600px) {
+  .col-s-1 {width: 8.33%;}
+  .col-s-2 {width: 16.66%;}
+  .col-s-3 {width: 25%;}
+  .col-s-4 {width: 33.33%;}
+  .col-s-5 {width: 41.66%;}
+  .col-s-6 {width: 50%;}
+  .col-s-7 {width: 58.33%;}
+  .col-s-8 {width: 66.66%;}
+  .col-s-9 {width: 75%;}
+  .col-s-10 {width: 83.33%;}
+  .col-s-11 {width: 91.66%;}
+  .col-s-12 {width: 100%;}
+}
+
+@media only screen and (min-width: 768px) {
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+}
+
+html {
+  font-family: "Lucida Sans", sans-serif;
+}
+
+.header {
+  background-color: #9933cc;
+  color: #ffffff;
+  padding: 15px;
+  text-align: center;
+
+}
+
+.header-content-inner img {
+  vertical-align:middle;
+  display:inline;
+}
+
+
+.menu .button {
+  background-color: #33b5e5;
+  border: 1px #33b5e5;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.60), 0 1px 2px rgba(0,0,0,0.75);
+  margin-bottom: 7px;
+
+
+}
+
+.menu .button:not(:last-child) {
+  border-bottom: none; /* Prevent double borders */
+}
+
+.menu .button:hover {
+  background-color: #9933cc;
+}
+
+.aside {
+  background-color: #33b5e5;
+  padding: 15px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.footer {
+  background-color: #0099cc;
+  color: #ffffff;
+  text-align: center;
+  font-size: 12px;
+  padding: 5px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content-inner img">
+        <h1><img src="https://i.ibb.co/8rGxZWy/Screen-Shot-2021-11-27-at-9-58-28-PM-removebg-preview.png" alt="logo" width="200">
+            Caticket!</h1> <br><br>
+    </div>
+</div>
+<br><br>
+
+
+
+<div class="row">
+    <div class= "col-3 col-s-3 menu">
+        <br><br>
+        <a href="/profile" class="button">View Profile</a> <br>
+        <a href="/create-event" class="button">Create an Event</a><br>
+        <a href="/list-events" class="button">View All Events</a><br>
+        <a href="/purchased-tickets" class="button">My Tickets </a><br>
+
+    </div>
+
+    <div class="col-6 col-s-9">
+        <img src="http://www.thecatterycc.org/uploads/4/0/0/2/40020663/s721319498973380130_p6_i1_w542.jpeg" alt="Cat ticket" width="277" height="341.5">
+    </div>
+
+    <div class="col-3 col-s-12">
+        <div class="aside">
+            <h2>Who are we?</h2>
+            <p>We are a bunch of graduate students trying to become computer scientists!</p>
+            <h2>What is our mission?</h2>
+            <p>Our mission is to get a purrfect score on the Software Development course and hopefully learn something along the way!</p>
+            <h2>Why Caticket?</h2>
+            <p>Because cats and tickets! Why not?!.</p>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>Caticket is a free website for those who want to find tickets and love cats!</p>
+    <p><img src="https://i.ibb.co/8rGxZWy/Screen-Shot-2021-11-27-at-9-58-28-PM-removebg-preview.png" alt="logo" width="150"></p>
+    <a href="#" class="fa fa-facebook"></a>
+    <a href="#" class="fa fa-twitter"></a>
+    <a href="#" class="fa fa-instagram"></a>
+</div>
+</body>
+</html>

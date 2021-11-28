@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.util.Base64;
 import java.util.Map;
 import cs601.project4.frontend.login.LoginServerConstants;
+import cs601.project4.objs.User;
 
 /**
  * A utility class with several helper methods.
@@ -94,13 +95,13 @@ public class LoginUtilities {
 
     /**
      * Verify the response from the token API.
-     * If successful, returns a ClientInfo object with information about the authed client.
+     * If successful, returns a User object with information about the authed client.
      * Returns null if not successful.
      * @param map
      * @param sessionId
      * @return
      */
-    public static ClientInfo verifyTokenResponse(Map<String, Object> map, String sessionId) {
+    public static User verifyTokenResponse(Map<String, Object> map, String sessionId) {
 
         // verify ok: true
         if(!map.containsKey(LoginServerConstants.OK_KEY) || !(boolean)map.get(LoginServerConstants.OK_KEY)) {
@@ -128,7 +129,7 @@ public class LoginUtilities {
         // extract name from response
         String name = (String) payloadMap.get(LoginServerConstants.NAME_KEY);
         String email = (String) payloadMap.get(LoginServerConstants.EMAIL_KEY);
-        return new ClientInfo(name, email);
+        return new User(name, email);
     }
 
     /**

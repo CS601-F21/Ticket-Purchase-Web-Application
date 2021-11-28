@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
 import org.eclipse.jetty.http.HttpStatus;
-import cs601.project4.frontend.login.utilities.ClientInfo;
+import cs601.project4.objs.User;
 import cs601.project4.frontend.login.utilities.Config;
 import cs601.project4.frontend.login.utilities.HTTPFetcher;
 import cs601.project4.frontend.login.utilities.LoginUtilities;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
@@ -25,13 +26,30 @@ import java.util.Map;
  */
 public class LoginServlet extends HttpServlet {
 
-    private int insertIntoUsersTable(ClientInfo clientInfo) throws SQLException {
+    private int checkIfNewUser(DBManager dbManager, User User) throws SQLException {
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_EMAIL"));
+        query.setString(1, User.getEmail());
+        ResultSet resultSet = query.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt("id");
+        }
+        else {
+            return -1;
+        }
+    }
+
+    private int insertIntoUsersTable(User User) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
-        query.setString(1, clientInfo.getName());
-        query.setString(2, clientInfo.getEmail());
-        return query.executeUpdate();
+        int id = checkIfNewUser(dbManager, User);
+        if (id != -1) {
+            return id;
+        } else {
+            PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
+            query.setString(1, User.getName());
+            query.setString(2, User.getEmail());
+            return query.executeUpdate();
+        }
     }
 
     @Override
@@ -41,8 +59,8 @@ public class LoginServlet extends HttpServlet {
         String sessionId = req.getSession(true).getId();
 
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if(clientInfoObj != null) {
+        Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        if(UserObj != null) {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
@@ -67,23 +85,23 @@ public class LoginServlet extends HttpServlet {
         String responseString = HTTPFetcher.doGet(url, null);
         Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
 
-        ClientInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
+        User User = LoginUtilities.verifyTokenResponse(response, sessionId);
 
-        if (clientInfo == null) {
+        if (User == null) {
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>Oops, login unsuccessful</h1>");
         } else {
             try {
-                int id = insertIntoUsersTable(clientInfo);
-                clientInfo.setId(id);
+                int id = insertIntoUsersTable(User);
+                User.setId(id);
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
-            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo);
+            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>Hello, " + clientInfo.getName() + "</h1>");
+            resp.getWriter().println("<h1>Hello, " + User.getName() + "</h1>");
             resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
             resp.getWriter().println("<p><a href=\"/home\">Home</a>");
 
@@ -98,8 +116,8 @@ public class LoginServlet extends HttpServlet {
         String sessionId = req.getSession(true).getId();
 
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if(clientInfoObj != null) {
+        Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        if(UserObj != null) {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
@@ -108,11 +126,11 @@ public class LoginServlet extends HttpServlet {
         }
         String name = req.getParameter("name");
         String email = req.getParameter("email");
-        ClientInfo clientInfo = new ClientInfo(name, email);
-        req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo);
+        User User = new User(name, email);
+        req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
         resp.setStatus(HttpStatus.OK_200);
         resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-        resp.getWriter().println("<h1>Hello, " + clientInfo.getName() + "</h1>");
+        resp.getWriter().println("<h1>Hello, " + User.getName() + "</h1>");
         resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
         resp.getWriter().println("<p><a href=\"/home\">Home</a>");
         resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);

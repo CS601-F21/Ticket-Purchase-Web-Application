@@ -23,6 +23,7 @@ public class FrontEndDriver {
         handler.setAttribute(ServerConstants.CONFIG_KEY, config);
         server.setHandler(handler);
         handler.addServlet(ListEventsServlet.class, "/list-events");
+        handler.addServlet(CreateEventServlet.class, "/create-event");
         handler.addServlet(LandingServlet.class, "/");
         handler.addServlet(HomeServlet.class, "/home");
         handler.addServlet(LoginServlet.class, "/login");

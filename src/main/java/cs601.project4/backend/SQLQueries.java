@@ -16,6 +16,7 @@ public class SQLQueries {
             Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, available, purchased) VALUES (?, ?, ?, 0)"),
             Map.entry("SELECT",  "SELECT * FROM events WHERE id=?"),
             Map.entry("UPDATE",  "UPDATE events SET available=?, purchased=? WHERE id=?"),
-            Map.entry("SELECT_ALL",  "SELECT * FROM events")
+            Map.entry("SELECT_ALL",  "SELECT * FROM events"),
+            Map.entry("SELECT_ALL_WITH_USERS",  "SELECT event_name, name AS user_name, available, purchased FROM events JOIN users ON events.created_by = users.id")
     );
 }

@@ -1,7 +1,7 @@
 package cs601.project4.frontend;
 
 import cs601.project4.frontend.login.LoginServerConstants;
-import cs601.project4.frontend.login.utilities.ClientInfo;
+import cs601.project4.objs.User;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServlet;
@@ -17,14 +17,14 @@ public class ProfileServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            if (clientInfoObj == null) {
+            Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+            if (UserObj == null) {
                 resp.sendRedirect("/");
                 return;
             }
-            ClientInfo clientInfo = (ClientInfo) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            String name = clientInfo.getName();
-            String email = clientInfo.getEmail();
+            User User = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+            String name = User.getName();
+            String email = User.getEmail();
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             Utils.formContent(resp, name, email, "/profile");
@@ -36,16 +36,16 @@ public class ProfileServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            if (clientInfoObj == null) {
+            Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+            if (UserObj == null) {
                 resp.sendRedirect("/");
                 return;
             }
 
             String name = req.getParameter("name");
             String email = req.getParameter("email");
-            ClientInfo clientInfo = new ClientInfo(name, email);
-            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo);
+            User User = new User(name, email);
+            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h2> The info was successfully updated!</h2>");

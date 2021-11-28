@@ -1,28 +1,15 @@
-package cs601.project4.frontend.login.utilities;
+package cs601.project4.objs;
 
-/**
- * A class to maintain info about each client.
- */
-public class ClientInfo {
+public class User {
+    String name;
+    String email;
+    int id;
 
-    private String name;
-    private String email;
-    private int id;
-
-    /**
-     * Constructor
-     * @param name
-     */
-    public ClientInfo(String name, String email) {
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.id = -1;
     }
 
-    /**
-     * return name
-     * @return
-     */
     public String getName() {
         return name;
     }
@@ -46,4 +33,6 @@ public class ClientInfo {
     public void setId(int id) {
         this.id = id;
     }
+
+
 }
