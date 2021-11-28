@@ -8,6 +8,7 @@ public class Config {
     private String database;
     private String username;
     private String password;
+    private String host;
 
     /**
      * Config class constructor.
@@ -15,10 +16,11 @@ public class Config {
      * @param username
      * @param password
      */
-    public Config(String database, String username, String password) {
+    public Config(String database, String username, String password, String host) {
         this.database = database;
         this.username = username;
         this.password = password;
+        this.host = host;
     }
 
     /**
@@ -43,5 +45,9 @@ public class Config {
      */
     public String getPassword() {
         return password;
+    }
+
+    public String getHost() {
+        return host;
     }
 }

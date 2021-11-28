@@ -6,13 +6,17 @@ package cs601.project4.frontend.login.utilities;
 public class ClientInfo {
 
     private String name;
+    private String email;
+    private int id;
 
     /**
      * Constructor
      * @param name
      */
-    public ClientInfo(String name) {
+    public ClientInfo(String name, String email) {
         this.name = name;
+        this.email = email;
+        this.id = -1;
     }
 
     /**
@@ -25,5 +29,21 @@ public class ClientInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

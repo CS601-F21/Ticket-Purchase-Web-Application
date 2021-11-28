@@ -4,6 +4,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cs601.project4.frontend.Utils;
 import org.eclipse.jetty.http.HttpStatus;
 import cs601.project4.frontend.login.utilities.Config;
 import cs601.project4.frontend.login.utilities.LoginUtilities;
@@ -64,7 +66,9 @@ public class LandingServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         writer.println(LoginServerConstants.PAGE_HEADER);
         writer.println("<h1>Welcome to the Login with Slack Demo Application</h1>");
+        writer.println("<h2>You can either log in through slack or enter your first and last name to log in</h2>");
         writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>");
+        Utils.formContent(resp, "John Doe", "jd@gmail.com", "/login");
         writer.println(LoginServerConstants.PAGE_FOOTER);
     }
 

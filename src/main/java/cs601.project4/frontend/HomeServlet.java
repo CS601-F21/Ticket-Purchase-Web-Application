@@ -7,13 +7,10 @@ import org.eclipse.jetty.http.HttpStatus;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
-public class ProfileServlet extends HttpServlet {
-
-    private void updateUsersTable() {
-
-    }
+public class HomeServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
@@ -24,10 +21,10 @@ public class ProfileServlet extends HttpServlet {
             }
             ClientInfo clientInfo = (ClientInfo) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
             String name = clientInfo.getName();
-            String email = clientInfo.getEmail();
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            Utils.formContent(resp, name, email, "/profile");
+            resp.getWriter().println("<h1>Welcome " + name + "! Choose one of the options below</h1>");
+            resp.getWriter().println("<p><a href=\"/profile\">View Profile</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -36,21 +33,7 @@ public class ProfileServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            if (clientInfoObj == null) {
-                resp.sendRedirect("/");
-                return;
-            }
 
-            String name = req.getParameter("name");
-            String email = req.getParameter("email");
-            ClientInfo clientInfo = new ClientInfo(name, email);
-            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo);
-            resp.setStatus(HttpStatus.OK_200);
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h2> The info was successfully updated!</h2>");
-            Utils.formContent(resp, name, email, "/profile");
-            resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

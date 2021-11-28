@@ -125,10 +125,10 @@ public class LoginUtilities {
         if(!expectedNonce.equals(actualNonce)) {
             return null;
         }
-
         // extract name from response
-        String username = (String) payloadMap.get(LoginServerConstants.NAME_KEY);
-        return new ClientInfo(username);
+        String name = (String) payloadMap.get(LoginServerConstants.NAME_KEY);
+        String email = (String) payloadMap.get(LoginServerConstants.EMAIL_KEY);
+        return new ClientInfo(name, email);
     }
 
     /**

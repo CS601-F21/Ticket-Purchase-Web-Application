@@ -24,6 +24,7 @@ public class FrontEndDriver {
         server.setHandler(handler);
         handler.addServlet(ListEventsServlet.class, "/list-events");
         handler.addServlet(LandingServlet.class, "/");
+        handler.addServlet(HomeServlet.class, "/home");
         handler.addServlet(LoginServlet.class, "/login");
         handler.addServlet(LogoutServlet.class, "/logout");
         handler.addServlet(ProfileServlet.class, "/profile");
