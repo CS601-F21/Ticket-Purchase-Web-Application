@@ -22,13 +22,15 @@ public class FrontEndDriver {
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handler.setAttribute(ServerConstants.CONFIG_KEY, config);
         server.setHandler(handler);
-        handler.addServlet(ListEventsServlet.class, "/list-events");
-        handler.addServlet(CreateEventServlet.class, "/create-event");
         handler.addServlet(LandingServlet.class, "/");
         handler.addServlet(HomeServlet.class, "/home");
         handler.addServlet(LoginServlet.class, "/login");
         handler.addServlet(LogoutServlet.class, "/logout");
         handler.addServlet(ProfileServlet.class, "/profile");
+        handler.addServlet(ListEventsServlet.class, "/list-events");
+        handler.addServlet(PurchaseTicketServlet.class, "/purchase");
+        handler.addServlet(CreateEventServlet.class, "/create-event");
+        handler.addServlet(ViewTransactionsServlet.class, "/view-transactions");
 
         server.start();
         server.join();

@@ -15,6 +15,10 @@ public class Event {
         this.purchased = purchased;
     }
 
+    public Event(String name) {
+        this.name = name;
+    }
+
     public String toHTML(String page) {
         String htm = "<tr><td> " + name + "    </td><td> " + createdBy.getName() +
                 "    </td><td> " + available + "    </td><td> " + purchased  + "    </td><td style=\"text-align:justify\"> ";

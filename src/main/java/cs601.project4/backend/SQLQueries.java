@@ -8,9 +8,9 @@ public class SQLQueries {
             Map.entry("SELECT_BY_EMAIL",  "SELECT * FROM users WHERE email=?")
     );
     public static Map<String, String> transactionQueries = Map.ofEntries(
-            Map.entry("SELECT_BY_USER_ID",  "SELECT event_id, transaction, other_user_id FROM transactions WHERE user_id=?"),
-            Map.entry("PURCHASE_TICKET",  "INSERT INTO transactions (user_id, event_id, transaction) VALUES (?, ?, purchase)"),
-            Map.entry("TRANSFER_TICKET",  "INSERT INTO transactions (user_id, event_id, other_user_id, transaction) VALUES (?, ?, ?, purchase)")
+            Map.entry("SELECT_BY_USER_ID",  "SELECT event_name, transaction_type, users.name AS other_user FROM transactions JOIN events on transactions.event_id = events.id LEFT JOIN users on transactions.other_user_id = users.id WHERE user_id=?"),
+            Map.entry("PURCHASE_TICKET",  "INSERT INTO transactions (user_id, event_id, transaction_type) VALUES (?, ?, purchase)"),
+            Map.entry("TRANSFER_TICKET",  "INSERT INTO transactions (user_id, event_id, other_user_id, transaction_type) VALUES (?, ?, ?, transfer)")
     );
     public static Map<String, String> eventQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, available, purchased) VALUES (?, ?, ?, 0)"),
