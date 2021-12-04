@@ -25,6 +25,7 @@ public class PurchaseTicketServlet extends HttpServlet {
         PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("UPDATE"));
         query.setInt(1, event.getAvailable() - 1);
         query.setInt(2, event.getPurchased() + 1);
+        query.setInt(3, event.getId());
         query.executeUpdate();
     }
 
@@ -53,12 +54,12 @@ public class PurchaseTicketServlet extends HttpServlet {
         return null;
     }
 
-
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
             int eventId = Integer.parseInt(req.getPathInfo().substring(1));
             Event event = getEvent(eventId);
+            System.out.println(user);
             if (event != null && event.getAvailable() > 0) {
                 updateEventsTable(event);
                 Transaction transaction = new Transaction(0, event, user, "purchase", null);
@@ -74,6 +75,7 @@ public class PurchaseTicketServlet extends HttpServlet {
             }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            e.printStackTrace();
         }
     }
 }

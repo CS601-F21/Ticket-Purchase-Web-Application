@@ -28,12 +28,13 @@ public class ListEventsServlet extends HttpServlet {
         StringBuilder eventsHTML = new StringBuilder();
 
         while (resultSet.next()) {
+            int id = resultSet.getInt("id");
             String eventName = resultSet.getString("event_name");
             String userName = resultSet.getString("user_name");
             int available = resultSet.getInt("available");
             int purchased = resultSet.getInt("purchased");
             User user = new User(userName, null);
-            Event event = new Event(0, eventName, user, available, purchased);
+            Event event = new Event(id, eventName, user, available, purchased);
             eventsHTML.append(event.toHTML("list-events"));
         }
         return eventsHTML.toString();

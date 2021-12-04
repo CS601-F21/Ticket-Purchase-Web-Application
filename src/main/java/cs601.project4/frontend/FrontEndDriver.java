@@ -28,7 +28,9 @@ public class FrontEndDriver {
         handler.addServlet(LogoutServlet.class, "/logout");
         handler.addServlet(ProfileServlet.class, "/profile");
         handler.addServlet(ListEventsServlet.class, "/list-events");
-        handler.addServlet(PurchaseTicketServlet.class, "/purchase");
+        handler.addServlet(PurchaseTicketServlet.class, "/purchase/*");
+        handler.addServlet(EventServlet.class, "/event/*");
+        handler.addServlet(EditEventServlet.class, "/edit-event/*");
         handler.addServlet(CreateEventServlet.class, "/create-event");
         handler.addServlet(ViewTransactionsServlet.class, "/view-transactions");
 

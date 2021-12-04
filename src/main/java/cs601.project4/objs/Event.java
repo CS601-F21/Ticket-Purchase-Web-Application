@@ -20,14 +20,12 @@ public class Event {
     }
 
     public String toHTML(String page) {
-        String htm = "<tr><td> " + name + "    </td><td> " + createdBy.getName() +
-                "    </td><td> " + available + "    </td><td> " + purchased  + "    </td><td style=\"text-align:justify\"> ";
+        String htm = "<tr><td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/event/" + id + "\" class=\"button\">" + name + "</a></td></div>" +
+                "<td> " + createdBy.getName() + " </td><td> " + available + " </td><td> " + purchased  + " </td>";
         if (page.equals("list-events")) {
-            htm += "<div class= \"menu\"><form action=\"/purchase/" + id + " method=\"GET\"><button name=\"purchase\" value=\"" + id +
-                    "\" type=\"submit\">Purchase Ticket</button></form></td></div>\n";
+            htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/purchase/" + id + "\" class=\"button\">Purchase!</a></td></div>\n";
         } else if (page.equals("my-events")) {
-            htm += "<div class= \"menu\"><form action=\"/events/" + id + " method=\"GET\"><button name=\"editEvent\" value=\"" + id +
-                    "\" type=\"submit\">Edit This Event</button></form></td></div>\n";
+            htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/edit-event/" + id + "\" class=\"button\">Edit</a></td></div>\n";
         }
         htm += "</tr>";
         return htm;
