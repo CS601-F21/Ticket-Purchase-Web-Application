@@ -10,6 +10,7 @@ import cs601.project4.objs.User;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,13 +45,14 @@ public class ViewTransactionsServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
-            resp.getWriter().println(queryAllTransactions(user));
-            resp.getWriter().println("</table> </div>\n" +
-                    "</body>\n" +
-                    "</html>");
-
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                PrintWriter writer = resp.getWriter();
+                writer.println(Utils.readFile(Paths.get(HTMLPATH)));
+                writer.println(queryAllTransactions(user));
+                writer.println("</table>");
+                writer.println(LoginServerConstants.PAGE_FOOTER);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

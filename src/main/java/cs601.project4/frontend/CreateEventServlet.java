@@ -38,12 +38,14 @@ public class CreateEventServlet extends HttpServlet {
     }
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            String eventName = req.getParameter("event-name");
-            int available = Integer.parseInt(req.getParameter("available"));
-            User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            insertIntoEventsTable(new Event(0, eventName, user, available, 0));
-            resp.getWriter().println("<h1> Event Created! </h1>");
-            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                String eventName = req.getParameter("event-name");
+                int available = Integer.parseInt(req.getParameter("available"));
+                insertIntoEventsTable(new Event(0, eventName, user, available, 0));
+                resp.getWriter().println("<h1> Event Created! </h1>");
+                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+            }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

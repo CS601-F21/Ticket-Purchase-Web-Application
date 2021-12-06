@@ -56,22 +56,23 @@ public class PurchaseTicketServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            int eventId = Integer.parseInt(req.getPathInfo().substring(1));
-            Event event = getEvent(eventId);
-            System.out.println(user);
-            if (event != null && event.getAvailable() > 0) {
-                updateEventsTable(event);
-                Transaction transaction = new Transaction(0, event, user, "purchase", null);
-                insertIntoTransactionsTable(transaction);
-                resp.getWriter().println("<h1> Ticket purchase was successful! </h1>");
-                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-            } else if (event == null) {
-                resp.getWriter().println("<h1> Event does not exist! </h1>");
-                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-            } else {
-                resp.getWriter().println("<h1> There are no available tickets for the event! </h1>");
-                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                int eventId = Integer.parseInt(req.getPathInfo().substring(1));
+                Event event = getEvent(eventId);
+                if (event != null && event.getAvailable() > 0) {
+                    updateEventsTable(event);
+                    Transaction transaction = new Transaction(0, event, user, "purchase", null);
+                    insertIntoTransactionsTable(transaction);
+                    resp.getWriter().println("<h1> Ticket purchase was successful! </h1>");
+                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                } else if (event == null) {
+                    resp.getWriter().println("<h1> Event does not exist! </h1>");
+                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                } else {
+                    resp.getWriter().println("<h1> There are no available tickets for the event! </h1>");
+                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                }
             }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

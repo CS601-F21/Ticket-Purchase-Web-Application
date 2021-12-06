@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
+import cs601.project4.frontend.Utils;
 import org.eclipse.jetty.http.HttpStatus;
 import cs601.project4.objs.User;
 import cs601.project4.frontend.login.utilities.Config;
@@ -38,16 +39,16 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private int insertIntoUsersTable(User User) throws SQLException {
+    private int insertIntoUsersTable(User user) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        int id = checkIfNewUser(dbManager, User);
+        int id = checkIfNewUser(dbManager, user);
         if (id != -1) {
             return id;
         } else {
             PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
-            query.setString(1, User.getName());
-            query.setString(2, User.getEmail());
+            query.setString(1, user.getName());
+            query.setString(2, user.getEmail());
             return query.executeUpdate();
         }
     }
@@ -64,7 +65,9 @@ public class LoginServlet extends HttpServlet {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
+            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+            resp.addHeader("REFRESH", "3;URL=/home");
             return;
         }
 
@@ -107,13 +110,10 @@ public class LoginServlet extends HttpServlet {
 
         }
         resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-        resp.addHeader("REFRESH", "5;URL=/home");
+        resp.addHeader("REFRESH", "3;URL=/home");
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        // retrieve the ID of this session
-        String sessionId = req.getSession(true).getId();
 
         // determine whether the user is already authenticated
         Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
@@ -121,19 +121,27 @@ public class LoginServlet extends HttpServlet {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
+            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+            resp.addHeader("REFRESH", "3;URL=/home");
             return;
         }
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         User User = new User(name, email);
         req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
+        try {
+            int id = insertIntoUsersTable(User);
+            User.setId(id);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
         resp.setStatus(HttpStatus.OK_200);
         resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
         resp.getWriter().println("<h1>Hello, " + User.getName() + "</h1>");
         resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
         resp.getWriter().println("<p><a href=\"/home\">Home</a>");
         resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-        resp.addHeader("REFRESH", "5;URL=/home");
+        resp.addHeader("REFRESH", "3;URL=/home");
     }
 }

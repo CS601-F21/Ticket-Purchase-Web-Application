@@ -2,12 +2,14 @@ package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
+import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.User;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,12 +45,14 @@ public class ListEventsServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
-            resp.getWriter().println(queryAllEvents());
-            resp.getWriter().println("</table> </div>\n" +
-                    "</body>\n" +
-                    "</html>");
-
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                PrintWriter writer = resp.getWriter();
+                writer.println(Utils.readFile(Paths.get(HTMLPATH)));
+                writer.println(queryAllEvents());
+                writer.println("</table>");
+                writer.println(LoginServerConstants.PAGE_FOOTER);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

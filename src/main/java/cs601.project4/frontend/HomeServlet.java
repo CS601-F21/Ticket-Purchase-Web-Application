@@ -15,23 +15,11 @@ public class HomeServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            if (UserObj == null) {
-                resp.sendRedirect("/");
-                return;
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                resp.setStatus(HttpStatus.OK_200);
+                resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
             }
-            User User = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-            String name = User.getName();
-            resp.setStatus(HttpStatus.OK_200);
-            resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
-        } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-    }
-
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

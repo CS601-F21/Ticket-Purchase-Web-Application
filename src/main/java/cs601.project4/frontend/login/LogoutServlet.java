@@ -18,7 +18,7 @@ public class LogoutServlet extends HttpServlet {
         // log out by invalidating the session
         req.getSession().invalidate();
         resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-        resp.getWriter().println("<h1>Thanks for playing</h1>");
+        resp.getWriter().println("<h1>Thanks for your business! Come back soon!</h1>");
         resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
 
     }

@@ -12,11 +12,13 @@ import cs601.project4.frontend.login.utilities.LoginUtilities;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 
 /**
  * Landing page that allows a user to request to login with Slack.
  */
 public class LandingServlet extends HttpServlet {
+    private static final String HTMLPATH = "resources/landing.html";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,7 +32,9 @@ public class LandingServlet extends HttpServlet {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
+            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+            resp.addHeader("REFRESH", "3;URL=/home");
             return;
         }
 
@@ -64,11 +68,9 @@ public class LandingServlet extends HttpServlet {
 
         resp.setStatus(HttpStatus.OK_200);
         PrintWriter writer = resp.getWriter();
-        writer.println(LoginServerConstants.PAGE_HEADER);
-        writer.println("<h1>Welcome to the Login with Slack Demo Application</h1>");
-        writer.println("<h2>You can either log in through slack or enter your first and last name to log in</h2>");
+        writer.println(Utils.readFile(Paths.get(HTMLPATH)));
         writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>");
-        Utils.formContent(resp, "John Doe", "jd@gmail.com", "/login");
+        Utils.userInfoformContent(resp, "", "", "/login");
         writer.println(LoginServerConstants.PAGE_FOOTER);
     }
 

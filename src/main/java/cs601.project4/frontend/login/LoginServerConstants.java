@@ -13,7 +13,7 @@ public class LoginServerConstants {
             "<body>\n" +
             "\n";
 
-    public static final String PAGE_FOOTER = "\n" +
+    public static final String PAGE_FOOTER = "</div>\n" +
             "</body>\n" +
             "</html>";
 
