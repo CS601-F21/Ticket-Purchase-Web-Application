@@ -12,7 +12,8 @@ public class SQLQueries {
     public static Map<String, String> transactionQueries = Map.ofEntries(
             Map.entry("SELECT_BY_USER_ID",  "SELECT event_name, transaction_type, users.name AS other_user FROM transactions JOIN events on transactions.event_id = events.id LEFT JOIN users on transactions.other_user_id = users.id WHERE user_id=?"),
             Map.entry("PURCHASE_TICKET",  "INSERT INTO transactions (user_id, event_id, transaction_type) VALUES (?, ?, 'purchase')"),
-            Map.entry("TRANSFER_TICKET",  "INSERT INTO transactions (user_id, event_id, other_user_id, transaction_type) VALUES (?, ?, ?, 'transfer')")
+            Map.entry("TRANSFER_TICKET",  "INSERT INTO transactions (user_id, event_id, other_user_id, transaction_type) VALUES (?, ?, ?, 'transfer')"),
+            Map.entry("MY_TICKETS",  "SELECT events.event_name, event_id FROM transactions JOIN events ON events.id=transactions.event_id WHERE (user_id=? AND transaction_type='purchase') OR other_user_id=?")
     );
     public static Map<String, String> eventQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, available, purchased) VALUES (?, ?, ?, 0)"),

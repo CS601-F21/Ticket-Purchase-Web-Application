@@ -14,30 +14,25 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 
-public class ListEventsServlet extends HttpServlet {
-    private static final String HTMLPATH = "resources/list_events.html";
+public class MyTicketsServlet extends HttpServlet {
+    private static final String HTMLPATH = "resources/my_tickets.html";
 
-    private String queryAllEvents() throws SQLException {
+    private String queryAllTickets(int userId) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(
-                SQLQueries.eventQueries.get("SELECT_ALL_WITH_USERS"));
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.transactionQueries.get("MY_TICKETS"));
+        query.setInt(1, userId);
+        query.setInt(2, userId);
         ResultSet resultSet = query.executeQuery();
         StringBuilder eventsHTML = new StringBuilder();
 
         while (resultSet.next()) {
-            int id = resultSet.getInt("id");
+            int id = resultSet.getInt("event_id");
             String eventName = resultSet.getString("event_name");
-            String userName = resultSet.getString("user_name");
-            int available = resultSet.getInt("available");
-            int purchased = resultSet.getInt("purchased");
-            User user = new User(userName, null);
-            Event event = new Event(id, eventName, user, available, purchased);
-            eventsHTML.append(event.toHTML("list-events"));
+            Event event = new Event(id, eventName);
+            eventsHTML.append(event.toHTML("my-tickets"));
         }
         return eventsHTML.toString();
 
@@ -49,7 +44,7 @@ public class ListEventsServlet extends HttpServlet {
             if (user != null) {
                 PrintWriter writer = resp.getWriter();
                 writer.println(Utils.readFile(Paths.get(HTMLPATH)));
-                writer.println(queryAllEvents());
+                writer.println(queryAllTickets(user.getId()));
                 writer.println("</table>");
                 writer.println(LoginServerConstants.PAGE_FOOTER);
             }

@@ -31,7 +31,9 @@ public class FrontEndDriver {
         handler.addServlet(PurchaseTicketServlet.class, "/purchase/*");
         handler.addServlet(EventServlet.class, "/event/*");
         handler.addServlet(CreateEventServlet.class, "/create-event");
+        handler.addServlet(TransferServlet.class, "/transfer");
         handler.addServlet(ViewTransactionsServlet.class, "/view-transactions");
+        handler.addServlet(MyTicketsServlet.class, "/my-tickets");
 
         server.start();
         server.join();
