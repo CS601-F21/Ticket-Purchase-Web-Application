@@ -49,7 +49,12 @@ public class LoginServlet extends HttpServlet {
             PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
             query.setString(1, user.getName());
             query.setString(2, user.getEmail());
-            return query.executeUpdate();
+            query.executeUpdate();
+            ResultSet rs = query.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return -1;
         }
     }
 
@@ -88,23 +93,23 @@ public class LoginServlet extends HttpServlet {
         String responseString = HTTPFetcher.doGet(url, null);
         Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
 
-        User User = LoginUtilities.verifyTokenResponse(response, sessionId);
+        User user = LoginUtilities.verifyTokenResponse(response, sessionId);
 
-        if (User == null) {
+        if (user == null) {
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>Oops, login unsuccessful</h1>");
         } else {
             try {
-                int id = insertIntoUsersTable(User);
-                User.setId(id);
+                int id = insertIntoUsersTable(user);
+                user.setId(id);
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
-            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
+            req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>Hello, " + User.getName() + "</h1>");
+            resp.getWriter().println("<h1>Hello, " + user.getName() + "</h1>");
             resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
             resp.getWriter().println("<p><a href=\"/home\">Home</a>");
 
@@ -128,17 +133,17 @@ public class LoginServlet extends HttpServlet {
         }
         String name = req.getParameter("name");
         String email = req.getParameter("email");
-        User User = new User(name, email);
-        req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, User);
+        User user = new User(name, email);
         try {
-            int id = insertIntoUsersTable(User);
-            User.setId(id);
+            int id = insertIntoUsersTable(user);
+            user.setId(id);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+        req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
         resp.setStatus(HttpStatus.OK_200);
         resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-        resp.getWriter().println("<h1>Hello, " + User.getName() + "</h1>");
+        resp.getWriter().println("<h1>Hello, " + user.getName() + "</h1>");
         resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
         resp.getWriter().println("<p><a href=\"/home\">Home</a>");
         resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);

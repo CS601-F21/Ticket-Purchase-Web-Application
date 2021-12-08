@@ -51,7 +51,7 @@ public class ProfileServlet extends HttpServlet {
             if (user != null) {
                 String name = req.getParameter("name");
                 String email = req.getParameter("email");
-                user = new User(name, email);
+                user = new User(name, email, user.getId());
                 req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
                 updateUsersTable(user);
                 resp.setStatus(HttpStatus.OK_200);
