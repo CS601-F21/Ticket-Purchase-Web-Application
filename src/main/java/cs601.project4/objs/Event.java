@@ -19,14 +19,10 @@ public class Event {
         this.name = name;
     }
 
-    public String toHTML(String page) {
+    public String toHTML() {
         String htm = "<tr><td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/event/" + id + "\" class=\"button\">" + name + "</a></td></div>" +
                 "<td> " + createdBy.getName() + " </td><td> " + available + " </td><td> " + purchased  + " </td>";
-        if (page.equals("list-events")) {
-            htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/purchase/" + id + "\" class=\"button\">Purchase!</a></td></div>\n";
-        } else if (page.equals("my-events")) {
-            htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/edit-event/" + id + "\" class=\"button\">Edit</a></td></div>\n";
-        }
+        htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/purchase/" + id + "\" class=\"button\">Purchase!</a></td></div>\n";
         htm += "</tr>";
         return htm;
     }

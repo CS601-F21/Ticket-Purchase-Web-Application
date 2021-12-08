@@ -6,6 +6,7 @@ public class SQLQueries {
     public static Map<String, String> userQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO users (name, email) VALUES (?, ?)"),
             Map.entry("SELECT_BY_EMAIL",  "SELECT * FROM users WHERE email=?"),
+            Map.entry("SELECT_BY_ID",  "SELECT * FROM users WHERE id=?"),
             Map.entry("UPDATE",  "UPDATE users SET name=?, email=? WHERE id=?")
     );
     public static Map<String, String> transactionQueries = Map.ofEntries(
@@ -16,8 +17,8 @@ public class SQLQueries {
     public static Map<String, String> eventQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, available, purchased) VALUES (?, ?, ?, 0)"),
             Map.entry("SELECT",  "SELECT * FROM events WHERE id=?"),
-            Map.entry("UPDATE",  "UPDATE events SET available=?, purchased=? WHERE id=?"),
-            Map.entry("SELECT_ALL",  "SELECT * FROM events"),
+            Map.entry("UPDATE",  "UPDATE events SET event_name=?, available=?, purchased=? WHERE id=?"),
+            Map.entry("DELETE",  "DELETE FROM events WHERE id=?"),
             Map.entry("SELECT_ALL_WITH_USERS",  "SELECT events.id, event_name, name AS user_name, available, purchased FROM events JOIN users ON events.created_by = users.id")
     );
 }

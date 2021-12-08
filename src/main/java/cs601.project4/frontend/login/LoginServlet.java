@@ -27,9 +27,9 @@ import java.util.Map;
  */
 public class LoginServlet extends HttpServlet {
 
-    private int checkIfNewUser(DBManager dbManager, User User) throws SQLException {
+    private int checkIfNewUser(DBManager dbManager, User user) throws SQLException {
         PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_EMAIL"));
-        query.setString(1, User.getEmail());
+        query.setString(1, user.getEmail());
         ResultSet resultSet = query.executeQuery();
         if (resultSet.next()) {
             return resultSet.getInt("id");

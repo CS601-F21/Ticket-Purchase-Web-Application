@@ -1,6 +1,7 @@
 package cs601.project4.frontend;
 
 import cs601.project4.frontend.login.LoginServerConstants;
+import cs601.project4.objs.Event;
 import cs601.project4.objs.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,26 @@ public class Utils {
         writer.println("<p><label for=\"email\">Email:</label><br>");
         writer.println("<input type=\"text\" id=\"email\" name=\"email\" value=\"" + email + "\"><br></p>");
         writer.println("<input type=\"submit\" value=\"Submit!\">\n</form>");
+    }
+
+    public static void eventInfoformContent(HttpServletResponse resp, Event event, String path, boolean readOnly) throws IOException {
+        PrintWriter writer = resp.getWriter();
+        String readOnlyArgument = "";
+        if (readOnly) {
+            readOnlyArgument = "readonly";
+        }
+        writer.println("<form action=\"" + path +"\" method=\"POST\">");
+        writer.println("<p><label for=\"name\">Event Name:</label><br>");
+        writer.println("<input type=\"text\" id=\"name\" name=\"name\" value=\"" + event.getName() + "\"" + readOnlyArgument + "><br></p>");
+        writer.println("<p><label for=\"available\">Available Tickets</label><br>");
+        writer.println("<input type=\"text\" id=\"available\" name=\"available\" value=\"" + event.getAvailable() + "\"" + readOnlyArgument + "><br></p>");
+        writer.println("<p><label for=\"purchased\">Purchased Tickets</label><br>");
+        writer.println("<input type=\"text\" id=\"purchased\" name=\"purchased\" value=\"" + event.getPurchased() + "\"" + readOnlyArgument + "><br></p>");
+        if (!readOnly) {
+            writer.println("<input name=\"operation\" type=\"submit\" value=\"Submit\">");
+            writer.println("<input name=\"operation\" type=\"submit\" value=\"Delete\">");
+        }
+        writer.println("</form>");
     }
 
     public static User checkLoggedIn(HttpServletRequest req, HttpServletResponse resp) throws IOException {

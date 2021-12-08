@@ -37,7 +37,7 @@ public class ListEventsServlet extends HttpServlet {
             int purchased = resultSet.getInt("purchased");
             User user = new User(userName, null);
             Event event = new Event(id, eventName, user, available, purchased);
-            eventsHTML.append(event.toHTML("list-events"));
+            eventsHTML.append(event.toHTML());
         }
         return eventsHTML.toString();
 
