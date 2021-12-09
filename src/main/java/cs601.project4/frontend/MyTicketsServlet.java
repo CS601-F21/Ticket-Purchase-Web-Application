@@ -22,9 +22,8 @@ public class MyTicketsServlet extends HttpServlet {
     private String queryAllTickets(int userId) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.transactionQueries.get("MY_TICKETS"));
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userTicketsQueries.get("SELECT"));
         query.setInt(1, userId);
-        query.setInt(2, userId);
         ResultSet resultSet = query.executeQuery();
         StringBuilder eventsHTML = new StringBuilder();
 

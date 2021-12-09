@@ -29,8 +29,10 @@ public class Utils {
     public static void userInfoformContent(HttpServletResponse resp, String name, String email, String path) throws IOException {
         PrintWriter writer = resp.getWriter();
         writer.println("<form action=\"" + path +"\" method=\"POST\">");
-        writer.println("<p><label for=\"name\">Name:</label><br>");
-        writer.println("<input type=\"text\" id=\"name\" name=\"name\" value=\"" + name + "\"><br></p>");
+        if (!path.contains("transfer")) {
+            writer.println("<p><label for=\"name\">Name:</label><br>");
+            writer.println("<input type=\"text\" id=\"name\" name=\"name\" value=\"" + name + "\"><br></p>");
+        }
         writer.println("<p><label for=\"email\">Email:</label><br>");
         writer.println("<input type=\"text\" id=\"email\" name=\"email\" value=\"" + email + "\"><br></p>");
         writer.println("<input type=\"submit\" value=\"Submit!\">\n</form>");
@@ -46,9 +48,9 @@ public class Utils {
         writer.println("<p><label for=\"name\">Event Name:</label><br>");
         writer.println("<input type=\"text\" id=\"name\" name=\"name\" value=\"" + event.getName() + "\"" + readOnlyArgument + "><br></p>");
         writer.println("<p><label for=\"available\">Available Tickets</label><br>");
-        writer.println("<input type=\"text\" id=\"available\" name=\"available\" value=\"" + event.getAvailable() + "\"" + readOnlyArgument + "><br></p>");
+        writer.println("<input type=\"number\" id=\"available\" name=\"available\" value=\"" + event.getAvailable() + "\"" + readOnlyArgument + "><br></p>");
         writer.println("<p><label for=\"purchased\">Purchased Tickets</label><br>");
-        writer.println("<input type=\"text\" id=\"purchased\" name=\"purchased\" value=\"" + event.getPurchased() + "\"" + readOnlyArgument + "><br></p>");
+        writer.println("<input type=\"number\" id=\"purchased\" name=\"purchased\" value=\"" + event.getPurchased() + "\"" + readOnlyArgument + "><br></p>");
         if (!readOnly) {
             writer.println("<input name=\"operation\" type=\"submit\" value=\"Submit\">");
             writer.println("<input name=\"operation\" type=\"submit\" value=\"Delete\">");

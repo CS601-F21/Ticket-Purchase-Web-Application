@@ -2,7 +2,6 @@ package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
-import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.Transaction;
 import cs601.project4.objs.User;
@@ -10,11 +9,9 @@ import cs601.project4.objs.User;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 
 public class PurchaseTicketServlet extends HttpServlet {
@@ -22,10 +19,19 @@ public class PurchaseTicketServlet extends HttpServlet {
     private void updateEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("UPDATE"));
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("UPDATE_TICKETS"));
         query.setInt(1, event.getAvailable() - 1);
         query.setInt(2, event.getPurchased() + 1);
         query.setInt(3, event.getId());
+        query.executeUpdate();
+    }
+
+    private void insertIntoUserTicketsTable(User user, Event event) throws SQLException {
+        DBManager dbManager = DBManager.getInstance();
+        assert dbManager != null;
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userTicketsQueries.get("INSERT"));
+        query.setInt(1, user.getId());
+        query.setInt(2, event.getId());
         query.executeUpdate();
     }
 
@@ -64,6 +70,7 @@ public class PurchaseTicketServlet extends HttpServlet {
                     updateEventsTable(event);
                     Transaction transaction = new Transaction(0, event, user, "purchase", null);
                     insertIntoTransactionsTable(transaction);
+                    insertIntoUserTicketsTable(user, event);
                     resp.getWriter().println("<h1> Ticket purchase was successful! </h1>");
                     resp.getWriter().println("<p><a href=\"/home\">Home</a>");
                 } else if (event == null) {
