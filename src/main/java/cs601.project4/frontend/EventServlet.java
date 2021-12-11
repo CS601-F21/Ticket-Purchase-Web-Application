@@ -64,10 +64,11 @@ public class EventServlet extends HttpServlet {
         if (resultSet.next()) {
             int id = resultSet.getInt("id");
             String eventName = resultSet.getString("event_name");
+            String description = resultSet.getString("description");
             int available = resultSet.getInt("available");
             int purchased = resultSet.getInt("purchased");
             User user = queryUsersTable(resultSet.getInt("created_by"));
-            return new Event(id, eventName, user, available, purchased);
+            return new Event(id, eventName, user, description, available, purchased);
         }
         return null;
     }

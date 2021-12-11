@@ -16,13 +16,14 @@ public class SQLQueries {
             Map.entry("MY_TICKETS",  "WITH pur AS (SELECT event_id, COUNT(*) AS cp FROM transactions WHERE user_id=? AND transaction_type='purchase' GROUP BY event_id), tr AS (SELECT event_id, COUNT(*) AS ct FROM transactions WHERE user_id=? AND transaction_type='transfer' GROUP BY event_id), rec AS (SELECT event_id, COUNT(*) AS cr FROM transactions WHERE other_user_id=? AND transaction_type='transfer' GROUP BY event_id), total_counts AS (SELECT cp + cr - ct AS total, event_id FROM pur FULL OUTER JOIN tr ON tr.event_id = pur.event_id FULL OUTER JOIN rec ON rec.event_id = tr.event_id) SELECT events.event_name, event_id FROM total_counts JOIN events ON events.id=transactions.event_id where total > 0")
     );
     public static Map<String, String> eventQueries = Map.ofEntries(
-            Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, available, purchased) VALUES (?, ?, ?, 0)"),
+            Map.entry("INSERT",  "INSERT INTO events (event_name, created_by, description, available, purchased) VALUES (?, ?, ?, ?, 0)"),
             Map.entry("SELECT",  "SELECT * FROM events WHERE id=?"),
             Map.entry("UPDATE",  "UPDATE events SET event_name=?, available=?, purchased=? WHERE id=?"),
             Map.entry("UPDATE_TICKETS",  "UPDATE events SET available=?, purchased=? WHERE id=?"),
             Map.entry("DELETE",  "DELETE FROM events WHERE id=?"),
-            Map.entry("SELECT_ALL_WITH_USERS",  "SELECT events.id, event_name, name AS user_name, available, purchased FROM events JOIN users ON events.created_by = users.id")
-    );
+            Map.entry("SELECT_ALL_WITH_USERS",  "SELECT events.id, event_name, description, name AS user_name, available, purchased FROM events JOIN users ON events.created_by = users.id"),
+            Map.entry("SEARCH",  "SELECT events.id, event_name, description, name AS user_name, available, purchased FROM events JOIN users ON events.created_by = users.id WHERE (event_name LIKE ? OR description LIKE ?) AND available LIKE ? AND purchased LIKE ?")
+            );
     public static Map<String, String> userTicketsQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO user_tickets (user_id, event_id) VALUES (?, ?)"),
             Map.entry("DELETE",  "DELETE FROM user_tickets WHERE id IN (SELECT * FROM user_tickets user_id=? AND event_id=? LIMIT 1"),

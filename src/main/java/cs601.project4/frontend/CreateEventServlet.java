@@ -25,13 +25,17 @@ public class CreateEventServlet extends HttpServlet {
         PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
         query.setString(1, event.getName());
         query.setInt(2, event.getCreatedBy().getId());
-        query.setInt(3, event.getAvailable());
+        query.setString(3, event.getDescription());
+        query.setInt(4, event.getAvailable());
         query.executeUpdate();
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
+            }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -41,8 +45,9 @@ public class CreateEventServlet extends HttpServlet {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
                 String eventName = req.getParameter("event-name");
+                String description = req.getParameter("description");
                 int available = Integer.parseInt(req.getParameter("available"));
-                insertIntoEventsTable(new Event(0, eventName, user, available, 0));
+                insertIntoEventsTable(new Event(0, eventName, user, description, available, 0));
                 resp.getWriter().println("<h1> Event Created! </h1>");
                 resp.getWriter().println("<p><a href=\"/home\">Home</a>");
             }

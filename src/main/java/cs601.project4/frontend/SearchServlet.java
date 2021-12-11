@@ -15,17 +15,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 
-public class ListEventsServlet extends HttpServlet {
-    private static final String HTMLPATH = "resources/list_events.html";
+public class SearchServlet extends HttpServlet {
+    private static final String HTMLPATH = "resources/search.html";
+    private static final String HTMLPATH_RESULT = "resources/search_results.html";
 
-    private String queryAllEvents() throws SQLException {
+    private String search(String phrase, String availableString, String purchasedString) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(
-                SQLQueries.eventQueries.get("SELECT_ALL_WITH_USERS"));
+        String phraseSQL = "%" + phrase + "%";
+        String availableSQL = "%";
+        String purchasedSQL = "%";
+        if (!availableString.equals("")) {
+            availableSQL = availableString;
+        }
+        if (!purchasedString.equals("")) {
+            purchasedSQL = purchasedString;
+        }
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("SEARCH"));
+        query.setString(1, phraseSQL);
+        query.setString(2, phraseSQL);
+        query.setString(3, availableSQL);
+        query.setString(4, purchasedSQL);
         ResultSet resultSet = query.executeQuery();
         StringBuilder eventsHTML = new StringBuilder();
 
@@ -41,17 +53,29 @@ public class ListEventsServlet extends HttpServlet {
             eventsHTML.append(event.toHTML("list-events"));
         }
         return eventsHTML.toString();
-
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
+                resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            User user = Utils.checkLoggedIn(req, resp);
+            if (user != null) {
+                String phrase = req.getParameter("phrase");
+                String availableString = req.getParameter("available");
+                String purchasedString = req.getParameter("purchased");
                 PrintWriter writer = resp.getWriter();
-                writer.println(Utils.readFile(Paths.get(HTMLPATH)));
-                writer.println(queryAllEvents());
-                writer.println("</table>");
+                writer.println(Utils.readFile(Paths.get(HTMLPATH_RESULT)));
+                writer.println(search(phrase, availableString, purchasedString));
+                writer.println("</table></div>");
                 writer.println(LoginServerConstants.PAGE_FOOTER);
             }
         } catch (Exception e) {

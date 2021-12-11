@@ -4,13 +4,15 @@ public class Event {
     int id;
     String name;
     User createdBy;
+    String description;
     int available;
     int purchased;
 
-    public Event(int id, String name, User createdBy, int available, int purchased) {
+    public Event(int id, String name, User createdBy, String description, int available, int purchased) {
         this.id = id;
         this.name = name;
         this.createdBy = createdBy;
+        this.description = description;
         this.available = available;
         this.purchased = purchased;
     }
@@ -28,7 +30,7 @@ public class Event {
         String htm = "<tr><td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/event/" +
                 id + "\" class=\"button\">" + name + "</a></td></div>";
         if (page.equals("list-events")) {
-            htm += "<td> " + createdBy.getName() + " </td><td> " + available + " </td><td> " + purchased  + " </td>";
+            htm += "<td> " + createdBy.getName() + " </td><td> " + description + " </td><td> " + available + " </td><td> " + purchased  + " </td>";
             htm += "<td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/purchase/" + id +
                     "\" class=\"button\">Purchase!</a></td></div>\n";
         } else if (page.equals("my-tickets")) {
@@ -38,6 +40,7 @@ public class Event {
         htm += "</tr>";
         return htm;
     }
+
 
     public int getId() {
         return id;
@@ -61,6 +64,14 @@ public class Event {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getAvailable() {
