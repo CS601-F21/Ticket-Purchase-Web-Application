@@ -27,24 +27,29 @@ import java.util.Map;
  */
 public class LoginServlet extends HttpServlet {
 
-    private int checkIfNewUser(DBManager dbManager, User user) throws SQLException {
+    private User queryUsersTable(int userId) throws SQLException {
+        DBManager dbManager = DBManager.getInstance();
+        assert dbManager != null;
         PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_EMAIL"));
-        query.setString(1, user.getEmail());
+        query.setInt(1, userId);
         ResultSet resultSet = query.executeQuery();
         if (resultSet.next()) {
-            return resultSet.getInt("id");
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            String email = resultSet.getString("email");
+            return new User(name, email, id);
         }
         else {
-            return -1;
+            return null;
         }
     }
 
-    private int insertIntoUsersTable(User user) throws SQLException {
+    private User insertIntoUsersTable(User user) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        int id = checkIfNewUser(dbManager, user);
-        if (id != -1) {
-            return id;
+        User queriedUser = queryUsersTable(user.getId());
+        if (queriedUser != null) {
+            return queriedUser;
         } else {
             PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
             query.setString(1, user.getName());
@@ -52,9 +57,10 @@ public class LoginServlet extends HttpServlet {
             query.executeUpdate();
             ResultSet rs = query.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt(1);
+                user.setId(rs.getInt(1));
+                return user;
             }
-            return -1;
+            return null;
         }
     }
 
@@ -68,11 +74,7 @@ public class LoginServlet extends HttpServlet {
         Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
         if(UserObj != null) {
             // already authed, no need to log in
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>You have already been authenticated</h1>");
-            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-            resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-            resp.addHeader("REFRESH", "3;URL=/home");
+            Utils.defaultResponse("<h1>You have already been authenticated</h1>", resp);
             return;
         }
 
@@ -94,28 +96,26 @@ public class LoginServlet extends HttpServlet {
         Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
 
         User user = LoginUtilities.verifyTokenResponse(response, sessionId);
-
+        String message;
         if (user == null) {
             resp.setStatus(HttpStatus.OK_200);
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>Oops, login unsuccessful</h1>");
+            message = "<h1>Oops, login unsuccessful</h1>";
         } else {
             try {
-                int id = insertIntoUsersTable(user);
-                user.setId(id);
+                user = insertIntoUsersTable(user);
+                if (user == null) {
+                    Utils.internalError(resp);
+                    return;
+                }
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
             req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
             resp.setStatus(HttpStatus.OK_200);
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>Hello, " + user.getName() + "</h1>");
-            resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
-            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-
+            message = "<h1>Hello, " + user.getName() + "</h1>";
+            message += "<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>";
         }
-        resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-        resp.addHeader("REFRESH", "3;URL=/home");
+        Utils.defaultResponse(message, resp);
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -124,29 +124,30 @@ public class LoginServlet extends HttpServlet {
         Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
         if(UserObj != null) {
             // already authed, no need to log in
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>You have already been authenticated</h1>");
-            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-            resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-            resp.addHeader("REFRESH", "3;URL=/home");
+            Utils.defaultResponse("<h1>You have already been authenticated</h1>", resp);
             return;
         }
         String name = req.getParameter("name");
         String email = req.getParameter("email");
+        if (name.equals("") || email.equals("")) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.defaultResponse("<h1> User name or email can not be empty", resp);
+            return;
+        }
         User user = new User(name, email);
         try {
-            int id = insertIntoUsersTable(user);
-            user.setId(id);
+            user = insertIntoUsersTable(user);
+            if (user == null) {
+                Utils.internalError(resp);
+                return;
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
         req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
         resp.setStatus(HttpStatus.OK_200);
-        resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-        resp.getWriter().println("<h1>Hello, " + user.getName() + "</h1>");
-        resp.getWriter().println("<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>");
-        resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-        resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-        resp.addHeader("REFRESH", "3;URL=/home");
+        String message = "<h1>Hello, " + user.getName() + "</h1>";
+        message += "<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>";
+        Utils.defaultResponse(message, resp);
     }
 }

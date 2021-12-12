@@ -13,6 +13,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Utils {
+
+    public static final String PAGE_HEADER = "<!DOCTYPE html>\n" +
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+            "<body>\n" +
+            "\n";
+
+    public static final String PAGE_FOOTER = "</div>\n" +
+            "</body>\n" +
+            "</html>";
+
     public static String readFile(Path path) {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader inBuffer = Files.newBufferedReader(path)){
@@ -24,6 +34,25 @@ public class Utils {
             e.printStackTrace();
         }
         return sb.toString();
+    }
+
+    public static void defaultResponse(String message, HttpServletResponse resp) {
+        try {
+            String imgURL = "https://i.ibb.co/8rGxZWy/Screen-Shot-2021-11-27-at-9-58-28-PM-removebg-preview.png";
+            String result = readFile(Path.of("resources/default.html")) +
+                    message +
+                    "<p><a href=\"/home\"><img src=\"" + imgURL + "\" width=\"200\"/></a>" +
+                    Utils.PAGE_FOOTER;
+            resp.getWriter().println(result);
+            resp.addHeader("REFRESH", "2;URL=/home");
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static void internalError(HttpServletResponse resp) {
+        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        Utils.defaultResponse("<h1>Something went wrong!</h1>", resp);
     }
 
     public static void userInfoformContent(HttpServletResponse resp, String name, String email, String path) throws IOException {
@@ -47,6 +76,8 @@ public class Utils {
         writer.println("<form action=\"" + path +"\" method=\"POST\">");
         writer.println("<p><label for=\"name\">Event Name:</label><br>");
         writer.println("<input type=\"text\" id=\"name\" name=\"name\" value=\"" + event.getName() + "\"" + readOnlyArgument + "><br></p>");
+        writer.println("<p><label for=\"created-by\">Created By:</label><br>");
+        writer.println("<input type=\"text\" id=\"created-by\" name=\"created-by\" value=\"" + event.getCreatedBy().getName() + "\" readonly><br></p>");
         writer.println("<p><label for=\"available\">Available Tickets</label><br>");
         writer.println("<input type=\"number\" id=\"available\" name=\"available\" value=\"" + event.getAvailable() + "\"" + readOnlyArgument + "><br></p>");
         writer.println("<p><label for=\"purchased\">Purchased Tickets</label><br>");
@@ -58,13 +89,18 @@ public class Utils {
         writer.println("</form>");
     }
 
-    public static User checkLoggedIn(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if (user == null) {
-            resp.sendRedirect("/");
+    public static User checkLoggedIn(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            User user = (User) req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+            if (user == null) {
+                resp.sendRedirect("/");
+                return null;
+            } else {
+                return user;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
-        } else {
-            return user;
         }
     }
 }

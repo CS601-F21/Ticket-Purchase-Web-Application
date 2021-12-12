@@ -18,23 +18,23 @@ public class FrontEndDriver {
     public static void main(String[] args) throws Exception {
         Gson gson = new Gson();
         Config config = gson.fromJson(Utils.readFile(Paths.get(args[0])), Config.class);
-        Server server = new Server(8080);
+        Server server = new Server(ServerConstants.PORT);
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handler.setAttribute(ServerConstants.CONFIG_KEY, config);
         server.setHandler(handler);
         handler.addServlet(LandingServlet.class, "/");
         handler.addServlet(HomeServlet.class, "/home");
         handler.addServlet(LoginServlet.class, "/login");
+        handler.addServlet(SearchServlet.class, "/search");
+        handler.addServlet(EventServlet.class, "/event/*");
         handler.addServlet(LogoutServlet.class, "/logout");
         handler.addServlet(ProfileServlet.class, "/profile");
+        handler.addServlet(TransferServlet.class, "/transfer/*");
+        handler.addServlet(MyTicketsServlet.class, "/my-tickets");
         handler.addServlet(ListEventsServlet.class, "/list-events");
         handler.addServlet(PurchaseTicketServlet.class, "/purchase/*");
-        handler.addServlet(EventServlet.class, "/event/*");
         handler.addServlet(CreateEventServlet.class, "/create-event");
-        handler.addServlet(TransferServlet.class, "/transfer/*");
         handler.addServlet(ViewTransactionsServlet.class, "/view-transactions");
-        handler.addServlet(MyTicketsServlet.class, "/my-tickets");
-        handler.addServlet(SearchServlet.class, "/search");
 
         server.start();
         server.join();

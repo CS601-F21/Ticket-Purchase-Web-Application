@@ -30,10 +30,10 @@ public class LandingServlet extends HttpServlet {
         Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
         if(UserObj != null) {
             // already authed, no need to log in
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
+            resp.getWriter().println(Utils.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
             resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-            resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+            resp.getWriter().println(Utils.PAGE_FOOTER);
             resp.addHeader("REFRESH", "3;URL=/home");
             return;
         }
@@ -49,7 +49,6 @@ public class LandingServlet extends HttpServlet {
          *
          * Use the session ID for this purpose.
          */
-        String state = sessionId;
 
         /** From the Open ID spec:
          * nonce
@@ -58,11 +57,11 @@ public class LandingServlet extends HttpServlet {
          * the ID Token. Sufficient entropy MUST be present in the nonce values used to prevent attackers
          * from guessing values. For implementation notes, see Section 15.5.2.
          */
-        String nonce = LoginUtilities.generateNonce(state);
+        String nonce = LoginUtilities.generateNonce(sessionId);
 
         // Generate url for request to Slack
         String url = LoginUtilities.generateSlackAuthorizeURL(config.getClient_id(),
-                state,
+                sessionId,
                 nonce,
                 config.getRedirect_url());
 
@@ -70,8 +69,9 @@ public class LandingServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         writer.println(Utils.readFile(Paths.get(HTMLPATH)));
         writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>");
+        writer.println("<h1>OR</h1>");
         Utils.userInfoformContent(resp, "", "", "/login");
-        writer.println(LoginServerConstants.PAGE_FOOTER);
+        writer.println(Utils.PAGE_FOOTER);
     }
 
 

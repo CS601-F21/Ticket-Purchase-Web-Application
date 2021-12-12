@@ -6,6 +6,7 @@ import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.Transaction;
 import cs601.project4.objs.User;
+import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +32,12 @@ public class ViewTransactionsServlet extends HttpServlet {
         StringBuilder transactionsHTML = new StringBuilder();
 
         while (resultSet.next()) {
+            int eventId = resultSet.getInt("event_id");
             String eventName = resultSet.getString("event_name");
             String transactionType = resultSet.getString("transaction_type");
             String otherUserName = resultSet.getString("other_user");
             User otherUser = new User(otherUserName, null);
-            Event event = new Event(eventName);
+            Event event = new Event(eventId, eventName);
             Transaction transaction = new Transaction(0, event, user, transactionType, otherUser);
             transactionsHTML.append(transaction.toHTML());
         }
@@ -47,15 +49,16 @@ public class ViewTransactionsServlet extends HttpServlet {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
+                resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
                 writer.println(Utils.readFile(Paths.get(HTMLPATH)));
                 writer.println(queryAllTransactions(user));
                 writer.println("</table>");
-                writer.println(LoginServerConstants.PAGE_FOOTER);
+                writer.println(Utils.PAGE_FOOTER);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 }

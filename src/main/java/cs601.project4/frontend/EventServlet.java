@@ -88,15 +88,14 @@ public class EventServlet extends HttpServlet {
                     } else {
                         Utils.eventInfoformContent(resp, event, null, true);
                     }
-                    resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+                    resp.getWriter().println(Utils.PAGE_FOOTER);
                 } else {
-                    resp.getWriter().println("<h1> Event does not exist! </h1>");
-                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    Utils.defaultResponse("<h1>This event does not exist! </h1>", resp);
                 }
-
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -105,6 +104,7 @@ public class EventServlet extends HttpServlet {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
                 int eventId = Integer.parseInt(req.getPathInfo().substring(1));
+                String message;
                 Event event = getEvent(eventId);
                 if (event != null) {
                     String operation = req.getParameter("operation");
@@ -118,30 +118,30 @@ public class EventServlet extends HttpServlet {
                             if (purchased >= 0) {
                                 event.setPurchased(purchased);
                                 updateEventsTable(event);
-                                resp.getWriter().println("<h1> Event info successfully updated</h1>");
-                                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                                resp.setStatus(HttpStatus.OK_200);
+                                message = "<h1> Event info successfully updated</h1>";
                             } else {
-                                resp.getWriter().println("<h1> Number of purchased tickets should be positive or zero</h1>");
-                                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                message = "<h1> Number of purchased tickets should be positive or zero</h1>";
                             }
                         } else {
-                            resp.getWriter().println("<h1> Number of available tickets should be positive or zero</h1>");
-                            resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            message = "<h1> Number of available tickets should be positive or zero</h1>";
                         }
                     } else {
+                        resp.setStatus(HttpStatus.OK_200);
                         deleteFromEventsTable(event);
-                        resp.getWriter().println("<h1> Event was successfully deleted!</h1>");
-                        resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                        message = "<h1> Event was successfully deleted!</h1>";
                     }
                 } else {
-                    resp.getWriter().println("<h1> Event does not exist! </h1>");
-                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    message = "<h1> This event does not exist! </h1>";
                 }
-
+                Utils.defaultResponse(message, resp);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 }

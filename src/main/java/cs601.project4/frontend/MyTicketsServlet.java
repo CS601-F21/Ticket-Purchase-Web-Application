@@ -5,6 +5,7 @@ import cs601.project4.backend.SQLQueries;
 import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.User;
+import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,15 +42,16 @@ public class MyTicketsServlet extends HttpServlet {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
+                resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
                 writer.println(Utils.readFile(Paths.get(HTMLPATH)));
                 writer.println(queryAllTickets(user.getId()));
                 writer.println("</table>");
-                writer.println(LoginServerConstants.PAGE_FOOTER);
+                writer.println(Utils.PAGE_FOOTER);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 }

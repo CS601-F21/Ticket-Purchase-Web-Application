@@ -40,6 +40,7 @@ public class TransferServlet extends HttpServlet {
         PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.transactionQueries.get("TRANSFER_TICKET"));
         query.setInt(1, transaction.getUser().getId());
         query.setInt(2, transaction.getEvent().getId());
+        query.setInt(3, transaction.getOtherUser().getId());
         query.executeUpdate();
     }
 
@@ -67,12 +68,12 @@ public class TransferServlet extends HttpServlet {
                 resp.setStatus(HttpStatus.OK_200);
                 String html = Utils.readFile(Paths.get(HTMLPATH));
                 resp.getWriter().println(html);
-                resp.getWriter().println("<h2> Please enter the email of the person who is receiving this ticket</h2>");
+                resp.getWriter().println("<h2> Please enter user email</h2>");
                 Utils.userInfoformContent(resp, null, "", "/transfer/" + eventId);
-                resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+                resp.getWriter().println(Utils.PAGE_FOOTER);
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 
@@ -86,20 +87,20 @@ public class TransferServlet extends HttpServlet {
                 User otherUser = queryUsersTable(email);
                 resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
-                writer.println(LoginServerConstants.PAGE_HEADER);
+                writer.println(Utils.PAGE_HEADER);
                 if (otherUser != null) {
                     updateUserTicketsTable(user, otherUser, eventId);
                     Transaction transaction = new Transaction(0, event, user, "transfer", otherUser);
                     insertIntoTransactionsTable(transaction);
-                    resp.getWriter().println("<h1> Ticket transfer was successful! </h1>");
+                    Utils.defaultResponse("<h1> Ticket transfer was successful! </h1>", resp);
                 } else {
-                    resp.getWriter().println("<h1> User with email " + email + " does not exist </h1>");
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    Utils.defaultResponse("<h1> User with email " + email + " does not exist </h1>", resp);
                 }
-                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
-                writer.println(LoginServerConstants.PAGE_FOOTER);
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            e.printStackTrace();
+            Utils.internalError(resp);
         }
     }
 }

@@ -16,7 +16,8 @@ public class Transaction {
     }
 
     public String toHTML() {
-        String htm = "<tr><td> " + event.getName() + "    </td><td> " + transactionType +
+        String htm = "<tr><td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/event/" +
+                event.getId() + "\"class=\"button\">" + event.getName() + "</a></td></div> </td><td> " + transactionType +
                 "    </td><td> " + otherUser.getName() + "    </td><td style=\"text-align:justify\"> ";
         htm += "</tr>";
         return htm;

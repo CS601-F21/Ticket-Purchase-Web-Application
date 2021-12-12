@@ -38,10 +38,10 @@ public class ProfileServlet extends HttpServlet {
                 String html = Utils.readFile(Paths.get(HTMLPATH));
                 resp.getWriter().println(html);
                 Utils.userInfoformContent(resp, name, email, "/profile");
-                resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+                resp.getWriter().println(Utils.PAGE_FOOTER);
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 
@@ -56,13 +56,14 @@ public class ProfileServlet extends HttpServlet {
                 updateUsersTable(user);
                 resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
-                writer.println(LoginServerConstants.PAGE_HEADER);
+                String html = Utils.readFile(Paths.get(HTMLPATH));
+                writer.println(html);
                 writer.println("<h2> The info was successfully updated!</h2>");
                 Utils.userInfoformContent(resp, name, email, "/profile");
-                writer.println(LoginServerConstants.PAGE_FOOTER);
+                writer.println(Utils.PAGE_FOOTER);
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 }

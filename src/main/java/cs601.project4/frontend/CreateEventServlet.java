@@ -2,9 +2,9 @@ package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
-import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.User;
+import org.eclipse.jetty.http.HttpStatus;
 
 
 import javax.servlet.http.HttpServlet;
@@ -22,7 +22,7 @@ public class CreateEventServlet extends HttpServlet {
     private void insertIntoEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("INSERT"), Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("INSERT"));
         query.setString(1, event.getName());
         query.setInt(2, event.getCreatedBy().getId());
         query.setString(3, event.getDescription());
@@ -37,22 +37,37 @@ public class CreateEventServlet extends HttpServlet {
                 resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
                 String eventName = req.getParameter("event-name");
                 String description = req.getParameter("description");
-                int available = Integer.parseInt(req.getParameter("available"));
-                insertIntoEventsTable(new Event(0, eventName, user, description, available, 0));
-                resp.getWriter().println("<h1> Event Created! </h1>");
-                resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                String availableString = req.getParameter("available");
+                String message;
+                if (!availableString.equals("")) {
+                    int available = Integer.parseInt(availableString);
+                    if (!eventName.equals("")) {
+                        resp.setStatus(HttpStatus.OK_200);
+                        insertIntoEventsTable(new Event(0, eventName, user, description, available, 0));
+                        message = "<h1>Event successfully created!</h1>";
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        message = "<h1>Event name can not be empty!</h1>";
+                    }
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    message = "<h1>Number of available tickets can not be empty</h1>";
+                }
+                Utils.defaultResponse(message, resp);
             }
-        } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Utils.internalError(resp);
         }
     }
 }

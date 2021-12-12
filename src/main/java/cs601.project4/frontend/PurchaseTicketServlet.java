@@ -5,6 +5,7 @@ import cs601.project4.backend.SQLQueries;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.Transaction;
 import cs601.project4.objs.User;
+import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,18 +73,17 @@ public class PurchaseTicketServlet extends HttpServlet {
                     Transaction transaction = new Transaction(0, event, user, "purchase", null);
                     insertIntoTransactionsTable(transaction);
                     insertIntoUserTicketsTable(user, event);
-                    resp.getWriter().println("<h1> Ticket purchase was successful! </h1>");
-                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                    resp.setStatus(HttpStatus.OK_200);
+                    Utils.defaultResponse("<h1> Ticket purchase was successful! </h1>", resp);
                 } else if (event == null) {
-                    resp.getWriter().println("<h1> Event does not exist! </h1>");
-                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    Utils.defaultResponse("<h1> Event does not exist! </h1>", resp);
                 } else {
-                    resp.getWriter().println("<h1> There are no available tickets for the event! </h1>");
-                    resp.getWriter().println("<p><a href=\"/home\">Home</a>");
+                    Utils.defaultResponse("<h1> There are no available tickets for the event! </h1>", resp);
                 }
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
             e.printStackTrace();
         }
     }

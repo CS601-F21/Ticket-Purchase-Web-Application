@@ -1,5 +1,7 @@
 package cs601.project4.frontend.login;
 
+import cs601.project4.frontend.Utils;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +19,6 @@ public class LogoutServlet extends HttpServlet {
 
         // log out by invalidating the session
         req.getSession().invalidate();
-        resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-        resp.getWriter().println("<h1>Thanks for your business! Come back soon!</h1>");
-        resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-
+        Utils.defaultResponse("<h1>Thanks for your business! Come back soon!</h1>", resp);
     }
 }

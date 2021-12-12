@@ -1,6 +1,5 @@
 package cs601.project4.frontend;
 
-import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.User;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -21,7 +20,7 @@ public class HomeServlet extends HttpServlet {
                 resp.getWriter().println(Utils.readFile(Paths.get(HTMLPATH)));
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Utils.internalError(resp);
         }
     }
 }
