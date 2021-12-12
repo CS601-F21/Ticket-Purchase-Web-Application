@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -14,10 +17,17 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
+/**
+ * Servlet to handle profile path
+ */
 public class ProfileServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/profile.html";
 
+    /**
+     * update the users table based on the new info
+     * @param user the new user object
+     * @throws SQLException
+     */
     private void updateUsersTable(User user) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

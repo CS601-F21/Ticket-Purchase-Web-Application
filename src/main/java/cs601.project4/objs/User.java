@@ -1,5 +1,10 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.objs;
-
+/**
+ * The User object class
+ */
 public class User {
     String name;
     String email;

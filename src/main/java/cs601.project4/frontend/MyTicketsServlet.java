@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -16,10 +19,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Servlet to handle my tickets path
+ */
 public class MyTicketsServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/my_tickets.html";
 
+    /**
+     * find all the tickets for a user
+     * @param userId the id of the user to find the users for
+     * @return the html formatted version of the found events
+     * @throws SQLException
+     */
     private String queryAllTickets(int userId) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

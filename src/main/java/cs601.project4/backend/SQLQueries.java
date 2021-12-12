@@ -1,7 +1,12 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.backend;
 
 import java.util.Map;
-
+/**
+ * Class to hold all the SQL queries
+ */
 public class SQLQueries {
     public static Map<String, String> userQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO users (name, email) VALUES (?, ?)"),
@@ -27,6 +32,7 @@ public class SQLQueries {
     public static Map<String, String> userTicketsQueries = Map.ofEntries(
             Map.entry("INSERT",  "INSERT INTO user_tickets (user_id, event_id) VALUES (?, ?)"),
             Map.entry("DELETE",  "DELETE FROM user_tickets WHERE user_id=? AND event_id=? LIMIT 1"),
-            Map.entry("SELECT",  "SELECT event_name, event_id FROM user_tickets JOIN events on events.id = user_tickets.event_id WHERE user_id=?")
+            Map.entry("SELECT",  "SELECT event_name, event_id FROM user_tickets JOIN events on events.id = user_tickets.event_id WHERE user_id=?"),
+            Map.entry("HAS_TICKET",  "SELECT * FROM user_tickets WHERE event_id=? AND user_id=?")
     );
 }

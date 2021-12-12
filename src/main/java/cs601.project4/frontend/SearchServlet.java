@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -17,11 +20,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/**
+ * Servlet to handle search path
+ */
 public class SearchServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/search.html";
     private static final String HTMLPATH_RESULT = "resources/search_results.html";
 
+    /**
+     * search the events table for some info
+     * @param phrase the phrase in the event name or description
+     * @param createdBy the user who created the event
+     * @param availableString the string version of the number of available tickets
+     * @param purchasedString the string version of the number of purchased tickets
+     * @return html formatted version of the found events
+     * @throws SQLException
+     */
     private String search(String phrase, String createdBy, String availableString, String purchasedString) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

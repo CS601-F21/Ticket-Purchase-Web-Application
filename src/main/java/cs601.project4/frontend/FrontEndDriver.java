@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import com.google.gson.Gson;
@@ -11,7 +14,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 
 import java.nio.file.Paths;
-
+/**
+ * The main driver of the UI
+ */
 public class FrontEndDriver {
 
 

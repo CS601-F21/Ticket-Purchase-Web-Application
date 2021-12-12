@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -18,10 +21,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/**
+ * Servlet to handle view transactions path
+ */
 public class ViewTransactionsServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/view_transactions.html";
 
+    /**
+     * Query the transactions of the user
+     * @param user the user to find the transactions for
+     * @return a html formatted version of transactions
+     * @throws SQLException
+     */
     private String queryAllTransactions(User user) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

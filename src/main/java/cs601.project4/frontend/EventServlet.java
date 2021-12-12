@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -15,10 +18,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Servlet to handle event path
+ */
 public class EventServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/event.html";
 
+    /**
+     * delete the event from the events table
+     * @param event the event to delete
+     * @throws SQLException
+     */
     private void deleteFromEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -27,6 +37,11 @@ public class EventServlet extends HttpServlet {
         query.executeUpdate();
     }
 
+    /**
+     * update the information fo the event
+     * @param event the new event object
+     * @throws SQLException
+     */
     private void updateEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -38,47 +53,12 @@ public class EventServlet extends HttpServlet {
         query.executeUpdate();
     }
 
-    private User queryUsersTable(int userId) throws SQLException {
-        DBManager dbManager = DBManager.getInstance();
-        assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_ID"));
-        query.setInt(1, userId);
-        ResultSet resultSet = query.executeQuery();
-        if (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String email = resultSet.getString("email");
-            return new User(name, email, id);
-        }
-        else {
-            return null;
-        }
-    }
-
-    private Event getEvent(int eventId) throws SQLException {
-        DBManager dbManager = DBManager.getInstance();
-        assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("SELECT"));
-        query.setInt(1, eventId);
-        ResultSet resultSet = query.executeQuery();
-        if (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String eventName = resultSet.getString("event_name");
-            String description = resultSet.getString("description");
-            int available = resultSet.getInt("available");
-            int purchased = resultSet.getInt("purchased");
-            User user = queryUsersTable(resultSet.getInt("created_by"));
-            return new Event(id, eventName, user, description, available, purchased);
-        }
-        return null;
-    }
-
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
                 int eventId = Integer.parseInt(req.getPathInfo().substring(1));
-                Event event = getEvent(eventId);
+                Event event = Utils.getEvent(eventId);
                 if (event != null) {
                     resp.setStatus(HttpStatus.OK_200);
                     String html = Utils.readFile(Paths.get(HTMLPATH));
@@ -105,7 +85,7 @@ public class EventServlet extends HttpServlet {
             if (user != null) {
                 int eventId = Integer.parseInt(req.getPathInfo().substring(1));
                 String message;
-                Event event = getEvent(eventId);
+                Event event = Utils.getEvent(eventId);
                 if (event != null) {
                     String operation = req.getParameter("operation");
                     if (operation.equals("Submit")) {

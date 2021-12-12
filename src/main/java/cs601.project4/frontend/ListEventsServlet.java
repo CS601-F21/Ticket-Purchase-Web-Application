@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -18,10 +21,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
+/**
+ * Servlet to handle list events path
+ */
 public class ListEventsServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/list_events.html";
 
+    /**
+     * query all the existing events
+     * @return the html formatted version of all events
+     * @throws SQLException
+     */
     private String queryAllEvents() throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

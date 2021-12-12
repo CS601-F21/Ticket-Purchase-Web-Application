@@ -1,5 +1,11 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.objs;
 
+/**
+ * The Event object class
+ */
 public class Event {
     int id;
     String name;
@@ -26,6 +32,11 @@ public class Event {
         this.name = name;
     }
 
+    /**
+     * Formats the event object into a html format that can be shown in a table
+     * @param page The page on which the event is intended to be shown
+     * @return html version of the event
+     */
     public String toHTML(String page) {
         String htm = "<tr><td style=\"text-align:justify\"> <div class= \"menu\"><a href=\"/event/" +
                 id + "\" class=\"button\">" + name + "</a></td></div>";

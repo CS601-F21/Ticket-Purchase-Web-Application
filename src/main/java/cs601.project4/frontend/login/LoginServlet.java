@@ -26,28 +26,16 @@ import java.util.Map;
  * the user has entered their auth info.
  */
 public class LoginServlet extends HttpServlet {
-
-    private User queryUsersTable(int userId) throws SQLException {
-        DBManager dbManager = DBManager.getInstance();
-        assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_EMAIL"));
-        query.setInt(1, userId);
-        ResultSet resultSet = query.executeQuery();
-        if (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String email = resultSet.getString("email");
-            return new User(name, email, id);
-        }
-        else {
-            return null;
-        }
-    }
-
+    /**
+     * insert the user into the users table if they are a new user otherwise return the existing user
+     * @param user the user to insert into the database
+     * @return the new or existing user
+     * @throws SQLException
+     */
     private User insertIntoUsersTable(User user) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
-        User queriedUser = queryUsersTable(user.getId());
+        User queriedUser = Utils.queryUsersTable(user.getEmail(),  0);
         if (queriedUser != null) {
             return queriedUser;
         } else {

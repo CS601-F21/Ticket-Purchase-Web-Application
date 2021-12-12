@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.objs.User;
@@ -8,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Paths;
 
-
+/**
+ * Servlet to handle home path
+ */
 public class HomeServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/home.html";
 

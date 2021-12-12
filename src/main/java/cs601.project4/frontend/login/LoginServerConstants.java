@@ -5,18 +5,6 @@ package cs601.project4.frontend.login;
  */
 public class LoginServerConstants {
 
-    public static final String PAGE_HEADER = "<!DOCTYPE html>\n" +
-            "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
-            "<head>\n" +
-            "  <title>Log in with Slack</title>\n" +
-            "</head>\n" +
-            "<body>\n" +
-            "\n";
-
-    public static final String PAGE_FOOTER = "</div>\n" +
-            "</body>\n" +
-            "</html>";
-
     public static final String HOST = "slack.com";
     public static final String AUTH_PATH = "openid/connect/authorize";
     public static final String TOKEN_PATH = "api/openid.connect.token";

@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -13,12 +16,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-
+/**
+ * Servlet to handle create events path
+ */
 public class CreateEventServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/create_event.html";
 
+    /**
+     * insert the created event into the events table
+     * @param event the event to insert into the table
+     * @throws SQLException
+     */
     private void insertIntoEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;

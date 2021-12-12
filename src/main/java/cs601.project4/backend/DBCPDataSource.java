@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Example of using Apache DBCP ConnectionPool.
+ * Class for using Apache DBCP ConnectionPool.
  * Taken from https://www.baeldung.com/java-connection-pooling
  */
 public class DBCPDataSource {

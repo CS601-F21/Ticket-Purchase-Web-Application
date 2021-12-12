@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -17,10 +20,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Servlet to handle transfer path
+ */
 public class TransferServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/transfer.html";
 
+    /**
+     * check whether the user has the ticket
+     * @param event the event object
+     * @param user the user object
+     * @return whether the user has the ticket
+     * @throws SQLException
+     */
+    private boolean checkUserHasTicket(Event event, User user) throws SQLException {
+        DBManager dbManager = DBManager.getInstance();
+        assert dbManager != null;
+        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userTicketsQueries.get("HAS_TICKET"));
+        query.setInt(1, event.getId());
+        query.setInt(2, user.getId());
+        ResultSet resultSet = query.executeQuery();
+        return resultSet.next();
+    }
+
+    /**
+     * updates the user_tickets table to remove the ticket from the initiating user and add it to the receiver user
+     * @param user the user that initiated the transfer
+     * @param otherUser the user to receive the ticket
+     * @param eventId the id of the event to transfer
+     * @throws SQLException
+     */
     private void updateUserTicketsTable(User user, User otherUser, int eventId) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -34,6 +63,11 @@ public class TransferServlet extends HttpServlet {
         query.executeUpdate();
     }
 
+    /**
+     * register the transfer transaction into the transactions table
+     * @param transaction the transaction to register
+     * @throws SQLException
+     */
     private void insertIntoTransactionsTable(Transaction transaction) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -44,21 +78,6 @@ public class TransferServlet extends HttpServlet {
         query.executeUpdate();
     }
 
-    private User queryUsersTable(String email) throws SQLException {
-        DBManager dbManager = DBManager.getInstance();
-        assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_EMAIL"));
-        query.setString(1, email);
-        ResultSet resultSet = query.executeQuery();
-        if (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            return new User(name, email, id);
-        }
-        else {
-            return null;
-        }
-    }
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
@@ -84,7 +103,12 @@ public class TransferServlet extends HttpServlet {
                 String email = req.getParameter("email");
                 int eventId = Integer.parseInt(req.getPathInfo().substring(1));
                 Event event = new Event(eventId, null);
-                User otherUser = queryUsersTable(email);
+                if (!checkUserHasTicket(event, user)) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    Utils.defaultResponse("<h1> You don't have this ticket! </h1>", resp);
+                    return;
+                }
+                User otherUser = Utils.queryUsersTable(email, 0);
                 resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
                 writer.println(Utils.PAGE_HEADER);

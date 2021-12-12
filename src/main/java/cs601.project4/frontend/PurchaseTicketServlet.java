@@ -1,3 +1,6 @@
+/**
+ * Author: Firoozeh Kaveh
+ */
 package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
@@ -14,9 +17,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Servlet to handle purchase path
+ */
 public class PurchaseTicketServlet extends HttpServlet {
-
+    /**
+     * adjust the number of tickets when a purchase happens
+     * @param event the event to adjust the number of tickets for
+     * @throws SQLException
+     */
     private void updateEventsTable(Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -27,6 +36,12 @@ public class PurchaseTicketServlet extends HttpServlet {
         query.executeUpdate();
     }
 
+    /**
+     * adds the ticket to the user_tickets table
+     * @param user user that has the tickets
+     * @param event the event for the ticket
+     * @throws SQLException
+     */
     private void insertIntoUserTicketsTable(User user, Event event) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -36,6 +51,11 @@ public class PurchaseTicketServlet extends HttpServlet {
         query.executeUpdate();
     }
 
+    /**
+     * adds the purchase transaction to the transactions table
+     * @param transaction the transaction to add to the table
+     * @throws SQLException
+     */
     private void insertIntoTransactionsTable(Transaction transaction) throws SQLException {
         DBManager dbManager = DBManager.getInstance();
         assert dbManager != null;
@@ -45,29 +65,13 @@ public class PurchaseTicketServlet extends HttpServlet {
         query.executeUpdate();
     }
 
-    private Event getEvent(int eventId) throws SQLException {
-        DBManager dbManager = DBManager.getInstance();
-        assert dbManager != null;
-        PreparedStatement query = dbManager.getConnection().prepareStatement(SQLQueries.eventQueries.get("SELECT"));
-        query.setInt(1, eventId);
-        ResultSet resultSet = query.executeQuery();
-        if (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String eventName = resultSet.getString("event_name");
-            String description = resultSet.getString("description");
-            int available = resultSet.getInt("available");
-            int purchased = resultSet.getInt("purchased");
-            return new Event(id, eventName, null, description, available, purchased);
-        }
-        return null;
-    }
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);
             if (user != null) {
                 int eventId = Integer.parseInt(req.getPathInfo().substring(1));
-                Event event = getEvent(eventId);
+                Event event = Utils.getEvent(eventId);
                 if (event != null && event.getAvailable() > 0) {
                     updateEventsTable(event);
                     Transaction transaction = new Transaction(0, event, user, "purchase", null);
