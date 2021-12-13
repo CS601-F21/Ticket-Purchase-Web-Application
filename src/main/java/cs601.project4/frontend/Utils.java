@@ -105,7 +105,7 @@ public class Utils {
      * @param readOnly whether the text boxes should be editable or not
      * @throws IOException
      */
-    public static void eventInfoformContent(HttpServletResponse resp, Event event, String path, boolean readOnly) throws IOException {
+    public static void eventInfoFormContent(HttpServletResponse resp, Event event, String path, boolean readOnly) throws IOException {
         PrintWriter writer = resp.getWriter();
         String readOnlyArgument = "";
         if (readOnly) {
@@ -128,7 +128,8 @@ public class Utils {
     }
 
     /**
-     * check if the user is logged in
+     * check if the user is logged in otherwise redirect to landing page. Used almost on all servlets
+     * so that the user is forced to log in before accessing these servlets
      * @param req the http request
      * @param resp the http response
      * @return the user object if they are logged in

@@ -112,6 +112,7 @@ public class TransferServlet extends HttpServlet {
                 resp.setStatus(HttpStatus.OK_200);
                 PrintWriter writer = resp.getWriter();
                 writer.println(Utils.PAGE_HEADER);
+                //* if all info is correct, update the user_tickets table and the transactions table
                 if (otherUser != null) {
                     updateUserTicketsTable(user, otherUser, eventId);
                     Transaction transaction = new Transaction(0, event, user, "transfer", otherUser);

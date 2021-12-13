@@ -5,7 +5,6 @@ package cs601.project4.frontend;
 
 import cs601.project4.backend.DBManager;
 import cs601.project4.backend.SQLQueries;
-import cs601.project4.frontend.login.LoginServerConstants;
 import cs601.project4.objs.Event;
 import cs601.project4.objs.User;
 import org.eclipse.jetty.http.HttpStatus;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -63,13 +61,16 @@ public class EventServlet extends HttpServlet {
                     resp.setStatus(HttpStatus.OK_200);
                     String html = Utils.readFile(Paths.get(HTMLPATH));
                     resp.getWriter().println(html);
+                    //* if the current user is the creator of the event, give them edit access by setting
+                    // readonly flag as false
                     if (event.getCreatedBy().getId() == user.getId()) {
-                        Utils.eventInfoformContent(resp, event, "/event/" + event.getId(), false);
+                        Utils.eventInfoFormContent(resp, event, "/event/" + event.getId(), false);
                     } else {
-                        Utils.eventInfoformContent(resp, event, null, true);
+                        Utils.eventInfoFormContent(resp, event, null, true);
                     }
                     resp.getWriter().println(Utils.PAGE_FOOTER);
                 } else {
+                    //* to prevent going to an event detail page that does not exist
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     Utils.defaultResponse("<h1>This event does not exist! </h1>", resp);
                 }
@@ -79,6 +80,11 @@ public class EventServlet extends HttpServlet {
         }
     }
 
+    /**
+     * if the event is created by the user and the user edits or deletes it, we go here
+     * @param req
+     * @param resp
+     */
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);
@@ -97,6 +103,7 @@ public class EventServlet extends HttpServlet {
                             event.setAvailable(available);
                             if (purchased >= 0) {
                                 event.setPurchased(purchased);
+                                //* if all info is correct, update the events table
                                 updateEventsTable(event);
                                 resp.setStatus(HttpStatus.OK_200);
                                 message = "<h1> Event info successfully updated</h1>";

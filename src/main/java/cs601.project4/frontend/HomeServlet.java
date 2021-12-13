@@ -16,7 +16,7 @@ import java.nio.file.Paths;
  */
 public class HomeServlet extends HttpServlet {
     private static final String HTMLPATH = "resources/home.html";
-
+    //* just reads and html file and forms the home page
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             User user = Utils.checkLoggedIn(req, resp);

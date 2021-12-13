@@ -58,10 +58,12 @@ public class CreateEventServlet extends HttpServlet {
                 String description = req.getParameter("description");
                 String availableString = req.getParameter("available");
                 String message;
+                //* None of the info should be empty except description
                 if (!availableString.equals("")) {
                     int available = Integer.parseInt(availableString);
                     if (!eventName.equals("")) {
                         resp.setStatus(HttpStatus.OK_200);
+                        //* the tables have auto_incremented ids so no need to set an id for the event here
                         insertIntoEventsTable(new Event(0, eventName, user, description, available, 0));
                         message = "<h1>Event successfully created!</h1>";
                     } else {

@@ -68,8 +68,8 @@ public class LandingServlet extends HttpServlet {
         resp.setStatus(HttpStatus.OK_200);
         PrintWriter writer = resp.getWriter();
         writer.println(Utils.readFile(Paths.get(HTMLPATH)));
-        writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>");
-        writer.println("<h1>OR</h1>");
+        writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\" width=\"300\"/></a>");
+        writer.println("<h4>OR</h4>");
         Utils.userInfoformContent(resp, "", "", "/login");
         writer.println(Utils.PAGE_FOOTER);
     }

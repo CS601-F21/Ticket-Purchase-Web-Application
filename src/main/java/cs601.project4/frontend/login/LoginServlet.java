@@ -82,13 +82,14 @@ public class LoginServlet extends HttpServlet {
         // Make the request to the token API
         String responseString = HTTPFetcher.doGet(url, null);
         Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
-
+        //*fetch the user info
         User user = LoginUtilities.verifyTokenResponse(response, sessionId);
         String message;
         if (user == null) {
             resp.setStatus(HttpStatus.OK_200);
             message = "<h1>Oops, login unsuccessful</h1>";
         } else {
+            //*If a new user, insert it into the users table otherwise return the existing user
             try {
                 user = insertIntoUsersTable(user);
                 if (user == null) {
@@ -98,23 +99,32 @@ public class LoginServlet extends HttpServlet {
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
+            //*store the user object in the session
             req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, user);
             resp.setStatus(HttpStatus.OK_200);
             message = "<h1>Hello, " + user.getName() + "</h1>";
             message += "<h2>You will be automatically redirected to the Homepage if not, click on the link below</h2>";
         }
+        //*show a fleeting message saying the login was successful and redirect to home
         Utils.defaultResponse(message, resp);
     }
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        // determine whether the user is already authenticated
+    /**
+     * used when the user does not want to use the slack login
+     * @param req
+     * @param resp
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+
+        //*determine whether the user is already authenticated
         Object UserObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
         if(UserObj != null) {
-            // already authed, no need to log in
+            //* already authed, no need to log in
             Utils.defaultResponse("<h1>You have already been authenticated</h1>", resp);
             return;
         }
+        //*get the user info from the form
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         if (name.equals("") || email.equals("")) {
@@ -122,8 +132,10 @@ public class LoginServlet extends HttpServlet {
             Utils.defaultResponse("<h1> User name or email can not be empty", resp);
             return;
         }
+        //* user is formed to be stored in the session
         User user = new User(name, email);
         try {
+            //* if new user insert into the users table
             user = insertIntoUsersTable(user);
             if (user == null) {
                 Utils.internalError(resp);

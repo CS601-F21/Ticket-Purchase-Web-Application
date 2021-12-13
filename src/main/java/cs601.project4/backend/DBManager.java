@@ -6,7 +6,7 @@ package cs601.project4.backend;
 import java.sql.SQLException;
 import java.sql.Connection;
 /**
- * Class to help access the SQL database
+ * Class to help access the SQL database. It is mainly a wrapper around DBCPDataSource
  */
 public class DBManager {
     private static DBManager dbManager;
@@ -26,7 +26,7 @@ public class DBManager {
 
     /**
      * if the object has been initiated, return it otherwise initiate and return it. This is done so that we don't have
-     * to intitiate this object everytime we need to access the database
+     * to initiate this object everytime we need to access the database
      * @return the dbmanager object
      */
     public synchronized static DBManager getInstance() {
