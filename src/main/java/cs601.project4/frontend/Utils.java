@@ -165,7 +165,6 @@ public class Utils {
         } else {
             query = dbManager.getConnection().prepareStatement(SQLQueries.userQueries.get("SELECT_BY_ID"));
             query.setInt(1, userId);
-            System.out.println(query.toString());
         }
         ResultSet resultSet = query.executeQuery();
         if (resultSet.next()) {
